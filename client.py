@@ -2,7 +2,7 @@ import requests
 import os
 from datetime import date
 from typing import Optional, Dict
-from pprint import pprint
+import json
 from getpass import getpass
 from pydantic import validate_arguments
 
@@ -339,6 +339,10 @@ class FooderClient:
     ) -> None:
         """delete_entry."""
         self.delete(f"/entry/{entry}")
+
+
+def pprint(response: str) -> None:
+    print(json.dumps(response, indent=2))
 
 
 if __name__ == "__main__":
