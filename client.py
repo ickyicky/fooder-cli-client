@@ -11,7 +11,10 @@ class FooderClient:
     """FooderClient."""
 
     def __init__(
-        self, token_cache=".token", url="https://fooderapi.domandoman.xyz/api"
+        self,
+        token_cache=".token",
+        refresh_token_cache=".refresh_token",
+        url="https://fooderapi.domandoman.xyz/api",
     ) -> None:
         """__init__.
 
@@ -22,6 +25,7 @@ class FooderClient:
         self.url = url
         self.session = requests.Session()
         self.token_cache = token_cache
+        self.refresh_token_cache = refresh_token_cache
         self.session.headers["Accept"] = "application/json"
 
     def read_token_cache(self) -> None:
@@ -45,6 +49,24 @@ class FooderClient:
         with open(self.token_cache, "w") as f:
             f.write(self.session.headers["Authorization"])
 
+    def save_refresh_token_cache(self, token: str) -> None:
+        """save_refresh_token_cache.
+
+        :param token:
+        :type token: str
+        :rtype: None
+        """
+        with open(self.refresh_token_cache, "w") as f:
+            f.write(token)
+
+    def read_refresh_token_cache(self) -> str:
+        """read_refresh_token_cache.
+
+        :rtype: str
+        """
+        with open(self.refresh_token_cache, "r") as f:
+            return f.read()
+
     def set_token(self, token: str) -> None:
         """set_token.
 
@@ -66,9 +88,28 @@ class FooderClient:
         """
         data = {"username": username, "password": password}
         response = self.session.post(self.url + "/token", data=data)
-        response.raise_for_status()
-        self.set_token(response.json()["access_token"])
+        if response.status_code != 200:
+            raise Exception(
+                "Invalid username or password, please check your username and password"
+            )
+        response = response.json()
+        self.set_token(response["access_token"])
         self.save_token_cache()
+        self.save_refresh_token_cache(response["refresh_token"])
+
+    def refresh_token(self) -> None:
+        """refresh_token.
+
+        :rtype: None
+        """
+        data = {"refresh_token": self.read_refresh_token_cache()}
+        response = self.session.post(self.url + "/token/refresh", json=data)
+        if response.status_code != 200:
+            raise Exception("Refresh token expired!")
+        response = response.json()
+        self.set_token(response["access_token"])
+        self.save_token_cache()
+        self.save_refresh_token_cache(response["refresh_token"])
 
     def get(self, path: str, params: Optional[Dict] = None) -> Optional[Dict]:
         """get.
@@ -81,9 +122,15 @@ class FooderClient:
         """
         if self.session.headers.get("Authorization") is None:
             self.read_token_cache()
+
         if params is None:
             params = {}
+
         response = self.session.get(self.url + path, params=params)
+        if response.status_code == 401:
+            self.refresh_token()
+            response = self.session.get(self.url + path, params=params)
+
         response.raise_for_status()
         return response.json()
 
@@ -96,7 +143,13 @@ class FooderClient:
         """
         if self.session.headers.get("Authorization") is None:
             self.read_token_cache()
+
         response = self.session.delete(self.url + path)
+
+        if response.status_code == 401:
+            self.refresh_token()
+            response = self.session.delete(self.url + path)
+
         response.raise_for_status()
 
     def post(self, path: str, data: Optional[Dict] = None) -> Optional[Dict]:
@@ -110,9 +163,16 @@ class FooderClient:
         """
         if self.session.headers.get("Authorization") is None:
             self.read_token_cache()
+
         if data is None:
             data = {}
+
         response = self.session.post(self.url + path, json=data)
+
+        if response.status_code == 401:
+            self.refresh_token()
+            response = self.session.post(self.url + path, json=data)
+
         response.raise_for_status()
         return response.json()
 
