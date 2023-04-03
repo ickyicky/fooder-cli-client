@@ -13,5 +13,5 @@ pip install -r requirements.txt
 Then, run the script with:
 
 ```bash
-python3 client.py --help
+python3 -m fooder_cli.view_diary
 ```
