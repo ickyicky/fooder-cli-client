@@ -1,10 +1,10 @@
-from .client import FooderClient
-from datetime import date
+from .client import get_client
 from rich.console import Console
 from rich.table import Table
+from typing import Tuple, Dict
 
 
-def print_diary(diary):
+def print_diary(diary: Dict) -> None:
     table = Table(title="Diary for " + diary["date"])
     table.add_column("Name", style="cyan", no_wrap=True)
     table.add_column("Grams", style="magenta")
@@ -43,22 +43,16 @@ def print_diary(diary):
     )
 
     console = Console()
-    console.print(table, justify="center")
+    console.print(table, justify="left")
+
+
+def get_diary(client) -> Dict:
+    from .parser import get_parser
+    args = get_parser().parse_args()
+    diary = client.get_diary(args.date)
+    return diary
 
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--date",
-        action="store",
-        type=date.fromisoformat,
-        default=date.today(),
-        help="date of diary to view",
-    )
-    args = parser.parse_args()
-
-    client = FooderClient()
-    diary = client.get_diary(args.date)
-    print_diary(diary)
+    client = get_client()
+    print_diary(get_diary(client))

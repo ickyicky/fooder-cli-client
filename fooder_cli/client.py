@@ -341,6 +341,11 @@ class FooderClient:
         self.delete(f"/entry/{entry}")
 
 
+def get_client() -> FooderClient:
+    client = FooderClient()
+    return client
+
+
 def pprint(response: str) -> None:
     print(json.dumps(response, indent=2))
 
