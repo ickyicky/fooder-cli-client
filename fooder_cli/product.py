@@ -6,7 +6,7 @@ from rich.table import Table
 
 def select_product(client):
     console = Console()
-    query = Prompt.ask("Enter product name: ")
+    query = Prompt.ask("Enter product name")
     products = client.list_products(query=query)["products"]
 
     table = Table(title="Found products")
@@ -40,7 +40,9 @@ def select_product(client):
         if not response:
             return
     else:
-        product_id = Prompt.ask("Choose product: ", default=0, choices=[str(i) for i in range(len(products))])
+        product_id = Prompt.ask(
+            "Choose product", default=0, choices=[str(i) for i in range(len(products))]
+        )
         product = products[int(product_id)]
 
     return product
@@ -48,10 +50,10 @@ def select_product(client):
 
 def add_product(client):
     console = Console()
-    name = Prompt.ask("Enter product name: ")
-    protein = float(Prompt.ask("Enter protein: "))
-    carb = float(Prompt.ask("Enter carb: "))
-    fat = float(Prompt.ask("Enter fat: "))
+    name = Prompt.ask("Enter product name")
+    protein = float(Prompt.ask("Enter protein"))
+    carb = float(Prompt.ask("Enter carb"))
+    fat = float(Prompt.ask("Enter fat"))
 
     calories = protein * 4 + carb * 4 + fat * 9
 
@@ -89,4 +91,5 @@ def add_product(client):
 
 if __name__ == "__main__":
     from .client import get_client
+
     add_product(get_client())

@@ -48,6 +48,7 @@ def print_diary(diary: Dict) -> None:
 
 def get_diary(client) -> Dict:
     from .parser import get_parser
+
     args = get_parser().parse_args()
     diary = client.get_diary(args.date)
     return diary

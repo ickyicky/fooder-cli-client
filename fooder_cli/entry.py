@@ -11,7 +11,7 @@ def add_entry(client, meal, product):
     data = {
         "meal_id": meal["id"],
         "product_id": product["id"],
-        "grams": float(Prompt.ask("Enter grams: ")),
+        "grams": float(Prompt.ask("Enter grams")),
     }
     response = client.post("/entry", data=data)
     return response
