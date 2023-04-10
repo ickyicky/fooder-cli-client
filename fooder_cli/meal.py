@@ -8,7 +8,7 @@ def create_meal(client, diary):
     order = max([meal["order"] for meal in meals]) + 1
 
     name = Prompt.ask("Enter meal name", default=f"Meal {order}")
-    client.create_meal(diary_id=diary["id"], name=name, order=order)
+    return client.create_meal(diary_id=diary["id"], name=name, order=order)
 
 
 def select_meal(diary):

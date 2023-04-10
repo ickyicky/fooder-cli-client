@@ -5,6 +5,11 @@ from typing import Optional, Dict
 import json
 from getpass import getpass
 from pydantic import validate_arguments
+from pathlib import Path
+
+
+class UnathorizedError(Exception):
+    pass
 
 
 class FooderClient:
@@ -12,8 +17,8 @@ class FooderClient:
 
     def __init__(
         self,
-        token_cache=".token",
-        refresh_token_cache=".refresh_token",
+        token_cache="~/.cache/fooder/.token",
+        refresh_token_cache="~/.cache/fooder/.refresh_token",
         url="https://fooderapi.domandoman.xyz/api",
     ) -> None:
         """__init__.
@@ -37,7 +42,7 @@ class FooderClient:
             with open(self.token_cache, "r") as f:
                 self.session.headers["Authorization"] = f.read()
         else:
-            raise Exception(
+            raise UnathorizedError(
                 "Token cache not found, please run `python client.py --login` first"
             )
 
@@ -46,6 +51,9 @@ class FooderClient:
 
         :rtype: None
         """
+        folder = os.path.dirname(self.token_cache)
+        Path(folder).mkdir(parents=True, exist_ok=True)
+
         with open(self.token_cache, "w") as f:
             f.write(self.session.headers["Authorization"])
 
@@ -56,6 +64,9 @@ class FooderClient:
         :type token: str
         :rtype: None
         """
+        folder = os.path.dirname(self.refresh_token_cache)
+        Path(folder).mkdir(parents=True, exist_ok=True)
+
         with open(self.refresh_token_cache, "w") as f:
             f.write(token)
 
@@ -64,8 +75,13 @@ class FooderClient:
 
         :rtype: str
         """
-        with open(self.refresh_token_cache, "r") as f:
-            return f.read()
+        if os.path.exists(self.refresh_token_cache):
+            with open(self.refresh_token_cache, "r") as f:
+                return f.read()
+        else:
+            raise UnathorizedError(
+                "Token cache not found, please run `python client.py --login` first"
+            )
 
     def set_token(self, token: str) -> None:
         """set_token.
@@ -89,7 +105,7 @@ class FooderClient:
         data = {"username": username, "password": password}
         response = self.session.post(self.url + "/token", data=data)
         if response.status_code != 200:
-            raise Exception(
+            raise UnathorizedError(
                 "Invalid username or password, please check your username and password"
             )
         response = response.json()
@@ -105,7 +121,7 @@ class FooderClient:
         data = {"refresh_token": self.read_refresh_token_cache()}
         response = self.session.post(self.url + "/token/refresh", json=data)
         if response.status_code != 200:
-            raise Exception("Refresh token expired!")
+            raise UnathorizedError("Refresh token expired!")
         response = response.json()
         self.set_token(response["access_token"])
         self.save_token_cache()
