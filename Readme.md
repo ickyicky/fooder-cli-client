@@ -10,26 +10,8 @@ First of all, install requirement with:
 pip install -r requirements.txt
 ```
 
-## Getting current diary
+## Launching
 
 ```bash
-python3 -m fooder_cli.diary
-```
-
-## Adding new meal
-
-```bash
-python3 -m fooder_cli.meal
-```
-
-## Adding entry do meal
-
-```bash
-python3 -m fooder_cli.entry
-```
-
-## Adding new products
-
-```bash
-python3 -m fooder_cli.product
+python3 -m fooder_cli
 ```

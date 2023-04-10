@@ -29,8 +29,8 @@ class FooderClient:
         """
         self.url = url
         self.session = requests.Session()
-        self.token_cache = token_cache
-        self.refresh_token_cache = refresh_token_cache
+        self.refresh_token_cache = os.path.expanduser(refresh_token_cache)
+        self.token_cache = os.path.expanduser(token_cache)
         self.session.headers["Accept"] = "application/json"
 
     def read_token_cache(self) -> None:

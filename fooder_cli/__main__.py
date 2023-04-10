@@ -46,6 +46,13 @@ def main() -> None:
 
     while True:
         try:
+            if diary is not None:
+                panel.subtitle = f"Diary for {diary['date']}"
+
+            if meal is not None:
+
+                panel.subtitle = f"{diary['date']} - {meal['name']}"
+
             print(panel)
             action = int(
                 Prompt.ask(
