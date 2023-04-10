@@ -46,12 +46,13 @@ def main() -> None:
 
     while True:
         try:
-            if diary is not None:
-                panel.subtitle = f"Diary for {diary['date']}"
+            if diary is None:
+                diary = get_diary(client)
 
-            if meal is not None:
+            if meal is None:
+                meal = diary["meals"][0]
 
-                panel.subtitle = f"{diary['date']} - {meal['name']}"
+            panel.subtitle = f"{diary['date']} - {meal['name']}"
 
             print(panel)
             action = int(
