@@ -65,9 +65,6 @@ def main() -> None:
                 login(client)
                 continue
 
-            if diary is None:
-                diary = get_diary(client)
-
             if action == 1:
                 print_diary(diary)
             elif action == 2:
