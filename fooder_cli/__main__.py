@@ -1,4 +1,4 @@
-from .client import get_client, UnathorizedError
+from .client import FooderClient, UnathorizedError
 from .diary import print_diary, get_diary
 from .entry import adding_loop
 from .meal import create_meal, select_meal
@@ -9,6 +9,7 @@ from rich.prompt import Prompt
 from rich.panel import Panel
 from rich.text import Text
 from rich import print
+from argparse import ArgumentParser
 
 
 def login(client) -> None:
@@ -17,8 +18,7 @@ def login(client) -> None:
     client.login(username, password)
 
 
-def main() -> None:
-    client = get_client()
+def main(client: FooderClient) -> None:
     diary = None
     meal = None
 
@@ -30,6 +30,7 @@ def main() -> None:
         (5, "Switch to another day"),
         (6, "Switch to another meal"),
         (0, "Login"),
+        ("e", "Exit"),
     ]
     text = Text()
 
@@ -55,12 +56,14 @@ def main() -> None:
             panel.subtitle = f"{diary['date']} - {meal['name']}"
 
             print(panel)
-            action = int(
-                Prompt.ask(
-                    "Choose action", default=1, choices=[str(i) for i, _ in actions]
-                )
+            action = Prompt.ask(
+                "Choose action", default=1, choices=[str(i) for i, _ in actions]
             )
 
+            if action == "e":
+                break
+
+            action = int(action)
             if action == 0:
                 login(client)
                 continue
@@ -91,4 +94,14 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = ArgumentParser()
+    parser.add_argument("--access-token", default="~/.cache/fooder/.token")
+    parser.add_argument("--refresh-token", default="~/.cache/fooder/.refresh_token")
+    parser.add_argument("--url", default="https://fooderapi.domandoman.xyz/api")
+    args = parser.parse_args()
+    client = FooderClient(
+        args.access_token,
+        args.refresh_token,
+        args.url,
+    )
+    main(client)
