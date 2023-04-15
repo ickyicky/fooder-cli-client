@@ -3,8 +3,6 @@ from .meal import select_meal
 from .product import select_product
 from .diary import get_diary, print_diary
 from rich.prompt import Prompt, Confirm
-from rich.table import Table
-from rich.text import Text
 
 
 def add_entry(client, meal, product):
