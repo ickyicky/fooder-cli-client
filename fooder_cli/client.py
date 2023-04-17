@@ -372,7 +372,12 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("ARGS", nargs="*")
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("-l", "--login", action="store_true", help="login to fooder")
+    group.add_argument(
+        "-l",
+        "--login",
+        action="store_true",
+        help="login to fooder with params: username password",
+    )
     group.add_argument(
         "-p",
         "--products",
@@ -413,8 +418,12 @@ if __name__ == "__main__":
     c = FooderClient()
 
     if args.login:
-        username = input("Username: ")
-        password = getpass("Password: ")
+        if len(args.ARGS) == 2:
+            username = args.ARGS[0]
+            password = args.ARGS[1]
+        else:
+            username = input("Username: ")
+            password = getpass("Password: ")
         c.login(username, password)
 
     if args.products:
