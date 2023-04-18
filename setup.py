@@ -9,7 +9,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="fooder",
-    version="0.0.1",
+    version="0.0.2",
     author="Piotr Domanski",
     author_email="pi.domanski@gmail.com",
     description="Minimalistic cli diary for tracking calories",

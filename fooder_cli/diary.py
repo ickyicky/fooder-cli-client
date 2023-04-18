@@ -1,4 +1,3 @@
-from .client import get_client
 from rich.console import Console
 from rich.table import Table
 from typing import Dict, Optional
@@ -48,15 +47,5 @@ def print_diary(diary: Dict) -> None:
 
 
 def get_diary(client, day: Optional[date] = None) -> Dict:
-    if day is None:
-        from .parser import get_parser
-
-        args = get_parser().parse_args()
-        day = args.date
     diary = client.get_diary(day)
     return diary
-
-
-if __name__ == "__main__":
-    client = get_client()
-    print_diary(get_diary(client))

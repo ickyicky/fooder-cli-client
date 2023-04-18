@@ -1,5 +1,3 @@
-from .client import get_client
-from .meal import select_meal
 from .product import select_product
 from .diary import get_diary, print_diary
 from rich.prompt import Prompt, Confirm
@@ -23,11 +21,3 @@ def adding_loop(client, meal):
             add_entry(client, meal, product)
             print_diary(get_diary(client))
         add_another = Confirm.ask("Add another entry?", default=False)
-
-
-if __name__ == "__main__":
-    client = get_client()
-
-    diary = get_diary(client)
-    meal = select_meal(diary)
-    adding_loop(client, meal)

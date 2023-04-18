@@ -87,9 +87,3 @@ def add_product(client):
 
     console.print(Text("Product added", style="bold green"))
     return product
-
-
-if __name__ == "__main__":
-    from .client import get_client
-
-    add_product(get_client())
