@@ -1,5 +1,4 @@
-from .client import get_client
-from .diary import get_diary, print_diary
+from .diary import print_diary
 from rich.prompt import Prompt
 
 
@@ -26,10 +25,3 @@ def select_meal(diary):
         meal = [meal for meal in meals if meal["order"] == int(meal_order)][0]
 
     return meal
-
-
-if __name__ == "__main__":
-    client = get_client()
-    diary = get_diary(client)
-    create_meal(client, diary)
-    print_diary(get_diary(client))

@@ -2,8 +2,6 @@ import requests
 import os
 from datetime import date
 from typing import Optional, Dict
-import json
-from getpass import getpass
 from pydantic import validate_arguments
 from pathlib import Path
 
@@ -355,85 +353,3 @@ class FooderClient:
     ) -> None:
         """delete_entry."""
         self.delete(f"/entry/{entry}")
-
-
-def get_client() -> FooderClient:
-    client = FooderClient()
-    return client
-
-
-def pprint(response: str) -> None:
-    print(json.dumps(response, indent=2))
-
-
-if __name__ == "__main__":
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    parser.add_argument("ARGS", nargs="*")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-l", "--login", action="store_true", help="login to fooder")
-    group.add_argument(
-        "-p",
-        "--products",
-        action="store_true",
-        help="list products with params: q limit offset",
-    )
-    group.add_argument(
-        "-a",
-        "--add-product",
-        action="store_true",
-        help="add product with params: name protein carb fat",
-    )
-    group.add_argument(
-        "-d", "--diary", action="store_true", help="get diary with params: date"
-    )
-    group.add_argument(
-        "-e",
-        "--entry",
-        action="store_true",
-        help="create entry with params: product quantity meal",
-    )
-    group.add_argument(
-        "--delete-entry", action="store_true", help="delete entry with param: entry"
-    )
-    group.add_argument(
-        "--edit-entry",
-        action="store_true",
-        help="edit entry with params: entry grams product meal",
-    )
-    group.add_argument(
-        "-m",
-        "--meal",
-        action="store_true",
-        help="create meal with params: diary name order",
-    )
-    args = parser.parse_args()
-
-    c = FooderClient()
-
-    if args.login:
-        username = input("Username: ")
-        password = getpass("Password: ")
-        c.login(username, password)
-
-    if args.products:
-        pprint(c.list_products(*args.ARGS))
-
-    if args.add_product:
-        pprint(c.create_product(*args.ARGS))
-
-    if args.diary:
-        pprint(c.get_diary(*args.ARGS))
-
-    if args.entry:
-        pprint(c.add_entry(*args.ARGS))
-
-    if args.delete_entry:
-        pprint(c.delete_entry(*args.ARGS))
-
-    if args.edit_entry:
-        pprint(c.edit_entry(*args.ARGS))
-
-    if args.meal:
-        pprint(c.create_meal(*args.ARGS))
