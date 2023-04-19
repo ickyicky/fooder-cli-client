@@ -12,9 +12,9 @@ from rich import print
 from argparse import ArgumentParser
 
 
-def login(client) -> None:
-    username = input("Username: ")
-    password = getpass("Password: ")
+def login(client, username=None, password=None) -> None:
+    username = username or input("Username: ")
+    password = password or getpass("Password: ")
     client.login(username, password)
 
 
@@ -98,10 +98,16 @@ def main() -> None:
     parser.add_argument("--access-token", default="~/.cache/fooder/.token")
     parser.add_argument("--refresh-token", default="~/.cache/fooder/.refresh_token")
     parser.add_argument("--url", default="https://fooderapi.domandoman.xyz/api")
+    parser.add_argument("--username", type=str, action="store", required=False)
+    parser.add_argument("--password", type=str, action="store", required=False)
     args = parser.parse_args()
     client = FooderClient(
         args.access_token,
         args.refresh_token,
         args.url,
     )
+
+    if args.username:
+        login(client, args.username, args.password)
+
     main_loop(client)
