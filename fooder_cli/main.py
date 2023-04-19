@@ -10,15 +10,30 @@ from rich.panel import Panel
 from rich.text import Text
 from rich import print
 from argparse import ArgumentParser
+from typing import Optional
 
 
-def login(client, username=None, password=None) -> None:
+def login(
+    client: FooderClient, username: Optional[str] = None, password: Optional[str] = None
+) -> None:
+    """
+    Login to fooder api
+
+    :param client: FooderClient instance
+    :param username: username
+    :param password: password
+    """
     username = username or input("Username: ")
     password = password or getpass("Password: ")
     client.login(username, password)
 
 
 def main_loop(client: FooderClient) -> None:
+    """
+    Main loop of fooder cli
+
+    :param client: FooderClient instance
+    """
     diary = None
     meal = None
 
@@ -98,8 +113,21 @@ def main() -> None:
     parser.add_argument("--access-token", default="~/.cache/fooder/.token")
     parser.add_argument("--refresh-token", default="~/.cache/fooder/.refresh_token")
     parser.add_argument("--url", default="https://fooderapi.domandoman.xyz/api")
-    parser.add_argument("--username", type=str, action="store", required=False)
-    parser.add_argument("--password", type=str, action="store", required=False)
+    parser.add_argument(
+        "--username",
+        type=str,
+        action="store",
+        required=False,
+        help="username for login",
+    )
+    parser.add_argument(
+        "--password",
+        type=str,
+        action="store",
+        required=False,
+        help="password for login, if not specified, you will be asked for it",
+    )
+
     args = parser.parse_args()
     client = FooderClient(
         args.access_token,
