@@ -54,14 +54,16 @@ def add_product(client):
     protein = float(Prompt.ask("Enter protein"))
     carb = float(Prompt.ask("Enter carb"))
     fat = float(Prompt.ask("Enter fat"))
+    fiber = float(Prompt.ask("Enter fiber"))
 
-    calories = protein * 4 + carb * 4 + fat * 9
+    calories = protein * 4 + carb * 4 + fat * 9 + fiber * 2
 
     table = Table(title="Product")
     table.add_column("Name", style="cyan", no_wrap=True)
     table.add_column("Protein", justify="right", style="green")
     table.add_column("Carb", justify="right", style="blue")
     table.add_column("Fat", justify="right", style="red")
+    table.add_column("Fiber", justify="right", style="magenta")
     table.add_column("Kcal", justify="right", style="yellow")
 
     table.add_row(
@@ -69,6 +71,7 @@ def add_product(client):
         str(round(protein, 2)),
         str(round(carb, 2)),
         str(round(fat, 2)),
+        str(round(fiber, 2)),
         str(round(calories, 2)),
     )
 
@@ -83,6 +86,7 @@ def add_product(client):
         protein=protein,
         carb=carb,
         fat=fat,
+        fiber=fiber,
     )
 
     console.print(Text("Product added", style="bold green"))

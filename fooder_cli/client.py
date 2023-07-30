@@ -237,6 +237,7 @@ class FooderClient:
         protein: float,
         carb: float,
         fat: float,
+        fiber: float,
     ) -> Dict:
         """create_product.
 
@@ -250,7 +251,7 @@ class FooderClient:
         :type fat: float
         :rtype: Dict
         """
-        data = {"name": name, "protein": protein, "carb": carb, "fat": fat}
+        data = {"name": name, "protein": protein, "carb": carb, "fat": fat, "fiber": fiber}
         return self.post("/product", data=data)
 
     @validate_arguments
